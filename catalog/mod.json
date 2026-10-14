@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "id": "component-controls-info-filter",
+  "name": "Component Controls Info Filter",
+  "description": "Filter Component Controls Info by control name and type.",
+  "author": "joshua-small",
+  "helpUrl": "https://github.com/joshua-small/qsys-component-controls-info-filter",
+  "thumbnail": "catalog/artwork/avitex.ico"
+}
