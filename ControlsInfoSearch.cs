@@ -111,18 +111,10 @@ internal static class ControlsInfoSearch
 
         private void Filter()
         {
-            var lines = source.Text.Replace("\r\n", "\n").Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            // Keep the host's localized "select a single component" message visible.
-            if (lines.Length > 0 && !lines.All(line => line.Contains(" ) ( ", StringComparison.Ordinal)))
-            {
-                display.Text = source.Text; count.Text = ""; return;
-            }
-            var words = search.Text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
-            var matches = lines.Where(line => words.All(word => line.Contains(word, StringComparison.OrdinalIgnoreCase))).ToArray();
-            display.Text = string.Join("\r\n", matches);
-            display.ScrollToHome();
-            count.Text = matches.Length == 0 && lines.Length > 0 ? $"No matching controls (0 of {lines.Length})"
-                : $"{matches.Length} of {lines.Length} controls";
+            var result = ControlsInfoFilter.Apply(source.Text, search.Text);
+            display.Text = result.Text;
+            if (result.IsControlList) display.ScrollToHome();
+            count.Text = result.CountText;
         }
     }
 }
