@@ -103,6 +103,7 @@ internal static class ControlsInfoSearch
                 }
             };
             Filter();
+            ControlsInfoWindow.Track(owner);
             owner.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
             {
                 if (owner.IsVisible && Window.GetWindow(owner)?.IsActive == true) search.Focus();

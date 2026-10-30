@@ -21,3 +21,15 @@ The runner compiles the same `ControlsInfoFilter.cs` used by the mod. It uses on
 Synthetic fixtures cover name/label/type substrings, all-term case-insensitive matching, whitespace and multiline queries, literal punctuation, no matches, counts, ordering, duplicate rows, newline handling, message passthrough, successive inputs, and a 2,000-row list. The row-shape check preserves existing behavior; it is not a validation of Designer's text format.
 
 These checks cover text transformation only. Building the full mod still requires the dependencies above. WPF event wiring, focus, keyboard interaction, selection/copy, real component changes, and preservation of the native source and design state remain separate [application acceptance work](https://github.com/joshua-small/qsys-component-controls-info-filter/issues/2).
+
+## Floating window behavior
+
+The filter gives its current floating Component Controls Info host the title `Component Controls Info`, a normal single-border window style, and taskbar visibility. It refreshes these properties when the inspector loads or changes presentation source, including after docking and refloating. The main Designer window is excluded by object identity. Pending refresh work and presentation-source observation are removed on unload, then restored on reload; the existing filter and query are retained.
+
+The WPF regression runner exercises the production window helper and attachment code with synthetic inspector contents. Property checks use unshown windows; lifecycle checks create real off-screen windows without requesting focus, move the retained inspector between hosts, and drain the WPF dispatcher. On Windows with the .NET 10 SDK and Windows Desktop runtime:
+
+```sh
+dotnet run --project tests/Window/ComponentControlsInfoFilter.WindowTests.csproj --configuration Release
+```
+
+It checks the floating properties, missing-host handling, repeated application, main-window exclusion across every window style and taskbar setting, docked-first opening, recreated/reused hosts, close/reopen, rapid reparenting, unloaded cleanup and retained filter/source state. Only the Core host-type lookup is substituted; it needs neither Designer nor vendor assemblies. Building this runner on another OS does not run its checks. Version 0.1.2 was checked on Designer 10.5.0 with Mods Core 0.1.11: two dock/float cycles, closing and reopening the floating inspector, reopening an existing inspector docked and then floating it, Ctrl+F, filtering, copying and Clear. Main-window properties and design/history state remained unchanged. First construction of a brand-new inspector while docked is covered by the standalone runner only. Two-component query switching, direct underlying source-text readback, theme coverage, taskbar-button interaction and Designer 10.5.1 remain separate application checks.

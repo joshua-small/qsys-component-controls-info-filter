@@ -1,0 +1,21 @@
+name: Window regression tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  window-tests:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Run WPF window property and lifecycle checks
+        run: dotnet run --project tests/Window/ComponentControlsInfoFilter.WindowTests.csproj --configuration Release
